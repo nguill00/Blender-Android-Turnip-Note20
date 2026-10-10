@@ -1,0 +1,6 @@
+KNOWN GOOD NOTE20 BLENDER TURNIP BUILD
+DATE: Sat Oct 10 07:01:49 CDT 2026
+SOURCE: /home/nolan/BlenderAndroid
+BUILD: /mnt/d/BlenderAndroidBuild/build_android_full
+APK: /mnt/d/BlenderAndroidBuild/KNOWN-GOOD-NOTE20-TURNIP-20261010-070058/apk/Blender-Note20-Turnip-KNOWN-GOOD.apk
+RESULT: Blender 5.3 Alpha launches on Note20 Ultra with Mesa Turnip through AdrenoTools; viewport renders successfully.

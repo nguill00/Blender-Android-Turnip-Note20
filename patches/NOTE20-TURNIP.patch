@@ -1,0 +1,227 @@
+diff --git a/build_files/android/android_features_full.cmake b/build_files/android/android_features_full.cmake
+index 91a6e15..044b35b 100644
+--- a/build_files/android/android_features_full.cmake
++++ b/build_files/android/android_features_full.cmake
+@@ -57,3 +57,88 @@ set(WITH_MOD_OCEANSIM ON CACHE BOOL "" FORCE)
+ 
+ # Path guiding in Cycles.
+ set(WITH_CYCLES_PATH_GUIDING ON CACHE BOOL "" FORCE)
++
++
++# CHATPATCH-BEGIN HOST-PYTHON-3.14
++# Ubuntu host is Python 3.14; Android target keeps Blender's normal Python version.
++if(NOT ANDROID)
++  set(PYTHON_VERSION "3.14" CACHE STRING "" FORCE)
++  set(PYTHON_ROOT_DIR "/usr" CACHE PATH "" FORCE)
++endif()
++# CHATPATCH-END HOST-PYTHON-3.14
++
++# CHATPATCH-BEGIN HOST-CODEGEN-TRIM
++if(NOT ANDROID)
++  set(PYTHON_VERSION "3.14" CACHE STRING "" FORCE)
++  set(PYTHON_ROOT_DIR "/usr" CACHE PATH "" FORCE)
++
++  set(WITH_LIBMV OFF CACHE BOOL "" FORCE)
++  set(WITH_CYCLES OFF CACHE BOOL "" FORCE)
++  set(WITH_OPENIMAGEDENOISE OFF CACHE BOOL "" FORCE)
++  set(WITH_OPENVDB OFF CACHE BOOL "" FORCE)
++  set(WITH_NANOVDB OFF CACHE BOOL "" FORCE)
++  set(WITH_ALEMBIC OFF CACHE BOOL "" FORCE)
++  set(WITH_USD OFF CACHE BOOL "" FORCE)
++  set(WITH_MATERIALX OFF CACHE BOOL "" FORCE)
++  set(WITH_MANIFOLD OFF CACHE BOOL "" FORCE)
++  set(WITH_HARU OFF CACHE BOOL "" FORCE)
++  set(WITH_OPENSUBDIV OFF CACHE BOOL "" FORCE)
++  set(WITH_LLVM OFF CACHE BOOL "" FORCE)
++endif()
++# CHATPATCH-END HOST-CODEGEN-TRIM
++
++
++# CHATPATCH-BEGIN HOST-CODEGEN-MINIMAL
++if(NOT ANDROID)
++  set(PYTHON_VERSION "3.14" CACHE STRING "" FORCE)
++  set(PYTHON_ROOT_DIR "/usr" CACHE PATH "" FORCE)
++
++  set(WITH_CYCLES OFF CACHE BOOL "" FORCE)
++  set(WITH_LIBMV OFF CACHE BOOL "" FORCE)
++
++  set(WITH_OPENCOLORIO OFF CACHE BOOL "" FORCE)
++  set(WITH_OPENIMAGEIO OFF CACHE BOOL "" FORCE)
++  set(WITH_OPENIMAGEDENOISE OFF CACHE BOOL "" FORCE)
++
++  set(WITH_OPENVDB OFF CACHE BOOL "" FORCE)
++  set(WITH_NANOVDB OFF CACHE BOOL "" FORCE)
++  set(WITH_ALEMBIC OFF CACHE BOOL "" FORCE)
++  set(WITH_USD OFF CACHE BOOL "" FORCE)
++  set(WITH_MATERIALX OFF CACHE BOOL "" FORCE)
++  set(WITH_OPENSUBDIV OFF CACHE BOOL "" FORCE)
++  set(WITH_OPENPGL OFF CACHE BOOL "" FORCE)
++
++  set(WITH_LLVM OFF CACHE BOOL "" FORCE)
++  set(WITH_MANIFOLD OFF CACHE BOOL "" FORCE)
++  set(WITH_HARU OFF CACHE BOOL "" FORCE)
++
++  set(WITH_CODEC_FFMPEG OFF CACHE BOOL "" FORCE)
++  set(WITH_FFTW3 OFF CACHE BOOL "" FORCE)
++
++  set(WITH_IMAGE_OPENEXR OFF CACHE BOOL "" FORCE)
++  set(WITH_IMAGE_OPENJPEG OFF CACHE BOOL "" FORCE)
++
++  set(WITH_PYTHON_INSTALL_NUMPY OFF CACHE BOOL "" FORCE)
++  set(WITH_PYTHON_INSTALL_ZSTANDARD OFF CACHE BOOL "" FORCE)
++endif()
++# CHATPATCH-END HOST-CODEGEN-MINIMAL
++
++# CHATPATCH-BEGIN HOST-CODEGEN-OIIO-FIX
++if(NOT ANDROID)
++  set(WITH_OPENIMAGEIO ON CACHE BOOL "" FORCE)
++  set(WITH_OPENCOLORIO ON CACHE BOOL "" FORCE)
++endif()
++# CHATPATCH-END HOST-CODEGEN-OIIO-FIX
++
++
++# CHATPATCH-BEGIN HOST-DEPS-PATHS
++if(NOT ANDROID)
++  set(OpenColorIO_DIR "/usr/share/cmake" CACHE PATH "" FORCE)
++  set(OpenImageIO_DIR "/mnt/d/BlenderAndroidBuild/host_deps/lib/cmake/OpenImageIO" CACHE PATH "" FORCE)
++  set(OpenImageIO_ROOT "/mnt/d/BlenderAndroidBuild/host_deps" CACHE PATH "" FORCE)
++  set(CMAKE_PREFIX_PATH "/mnt/d/BlenderAndroidBuild/host_deps;/usr" CACHE STRING "" FORCE)
++
++  set(WITH_OPENIMAGEIO ON CACHE BOOL "" FORCE)
++  set(WITH_OPENCOLORIO ON CACHE BOOL "" FORCE)
++endif()
++# CHATPATCH-END HOST-DEPS-PATHS
+diff --git a/build_files/android/apk/package.sh b/build_files/android/apk/package.sh
+old mode 100644
+new mode 100755
+index e81e071..027bca3
+--- a/build_files/android/apk/package.sh
++++ b/build_files/android/apk/package.sh
+@@ -20,8 +20,8 @@ CONFIG="${BLENDER_ANDROID_CONFIG:-full}"
+ BUILD_BASE="${BUILD_BASE:-$(cd "$REPO_ROOT/.." && pwd)/blender_build_android}"
+ : "${LIBDIR:=$BUILD_BASE/lib/android_arm64}"
+ BUILD="${BUILD:-$BUILD_BASE/build_android_$CONFIG}"
+-BT="$ANDROID_HOME/build-tools/35.0.1"
+-ANDROID_JAR="$ANDROID_HOME/platforms/android-35/android.jar"
++BT="/home/nolan/android-sdk/build-tools/34.0.0"
++ANDROID_JAR="$ANDROID_HOME/platforms/android-34/android.jar"
+ # Flavours differ only in what gets packaged, so they share a build tree but
+ # need their own stage and output name.
+ FLAVOUR="${BLENDER_ANDROID_FLAVOUR:-}"
+diff --git a/build_files/android/build_apk.sh b/build_files/android/build_apk.sh
+old mode 100644
+new mode 100755
+diff --git a/build_files/android/configure.sh b/build_files/android/configure.sh
+old mode 100644
+new mode 100755
+diff --git a/build_files/android/deps/build.sh b/build_files/android/deps/build.sh
+old mode 100644
+new mode 100755
+index 5926e8c..9d116e7
+--- a/build_files/android/deps/build.sh
++++ b/build_files/android/deps/build.sh
+@@ -535,6 +535,7 @@ build_openvdb() {
+     -DOPENVDB_BUILD_BINARIES=OFF -DOPENVDB_BUILD_UNITTESTS=OFF \
+     -DOPENVDB_BUILD_NANOVDB=ON -DNANOVDB_BUILD_TOOLS=OFF -DUSE_NANOVDB=ON \
+     -DOPENVDB_BUILD_PYTHON_MODULE=OFF \
++    -DUSE_EXR=OFF -DUSE_IMATH_HALF=OFF \
+     -DUSE_BLOSC=ON -DBlosc_ROOT="$LIBDIR/blosc" -DTBB_ROOT="$LIBDIR/tbb"
+ }
+ 
+diff --git a/build_files/android/env.sh b/build_files/android/env.sh
+old mode 100644
+new mode 100755
+diff --git a/build_files/android/fastdeploy.sh b/build_files/android/fastdeploy.sh
+old mode 100644
+new mode 100755
+diff --git a/intern/cycles/util/simd.h b/intern/cycles/util/simd.h
+index 73c94b0..db9211f 100644
+--- a/intern/cycles/util/simd.h
++++ b/intern/cycles/util/simd.h
+@@ -5,6 +5,27 @@
+ 
+ #pragma once
+ 
++/* CHATPATCH-BEGIN ANDROID-CYCLES-SSE2NEON */
++/*
++ * Cycles uses x86 SSE names internally.  On Android arm64 they are
++ * provided by sse2neon.  Pull it in before Cycles declares/uses
++ * __m128/__m128i and the NEON table types.
++ */
++#if defined(__ANDROID__) && defined(__aarch64__) && defined(WITH_SSE2NEON)
++#  ifndef SSE2NEON_PRECISE_MINMAX
++#    define SSE2NEON_PRECISE_MINMAX 1
++#  endif
++#  ifndef SSE2NEON_PRECISE_DIV
++#    define SSE2NEON_PRECISE_DIV 1
++#  endif
++#  ifndef SSE2NEON_PRECISE_SQRT
++#    define SSE2NEON_PRECISE_SQRT 1
++#  endif
++#  include <sse2neon.h>
++#endif
++/* CHATPATCH-END ANDROID-CYCLES-SSE2NEON */
++
++
+ #include <cstdint>
+ #include <limits>
+ 
+diff --git a/source/blender/gpu/intern/gpu_context.cc b/source/blender/gpu/intern/gpu_context.cc
+index 83d4633..8357dcc 100644
+--- a/source/blender/gpu/intern/gpu_context.cc
++++ b/source/blender/gpu/intern/gpu_context.cc
+@@ -207,6 +207,31 @@ GPUContext *GPU_context_create(GHOST_IWindow *ghost_window, GHOST_IContext *ghos
+   }
+   Context *ctx = GPUBackend::get()->context_alloc(ghost_window, ghost_context);
+ 
++  /* CHATPATCH-BEGIN ANDROID-GPU-CONTEXT-GUARD
++   *
++   * On Android a Vulkan backend can fail device creation after the
++   * compatibility probe rejects the system driver.  Do not continue into
++   * DebugDraw with a null GPU context; that was the exact Note20 crash:
++   * GPU_storagebuf_update -> DebugDraw::reset -> GPU_context_create.
++   */
++  if (ctx == nullptr) {
++    fprintf(stderr,
++            "[BlenderAndroid] GPU context creation failed; "
++            "renderer backend did not provide a usable device.\n");
++
++    {
++      std::scoped_lock lock(backend_users_mutex);
++      num_backend_users--;
++      BLI_assert(num_backend_users >= 0);
++      if (num_backend_users == 0) {
++        gpu_backend_discard();
++      }
++    }
++
++    return nullptr;
++  }
++  /* CHATPATCH-END ANDROID-GPU-CONTEXT-GUARD */
++
+   GPU_context_active_set(wrap(ctx));
+ 
+   draw::DebugDraw::get().acquire();
+diff --git a/source/blender/makesrna/intern/CMakeLists.txt b/source/blender/makesrna/intern/CMakeLists.txt
+index 51fd6b1..4069085 100644
+--- a/source/blender/makesrna/intern/CMakeLists.txt
++++ b/source/blender/makesrna/intern/CMakeLists.txt
+@@ -103,12 +103,17 @@ set(DEFSRC
+   rna_xr.cc
+ )
+ 
+-if(WITH_USD)
++# CHATPATCH-BEGIN ANDROID-HOST-USD-RNA
++# Android's real build has WITH_USD enabled.  The Linux host makesrna
++# generator must therefore also contain rna_usd.cc or rna_usd_gen.cc
++# will never be emitted.
++if(WITH_USD OR NOT ANDROID)
+   list(APPEND DEFSRC
+     rna_usd.cc
+   )
+   add_definitions(-DWITH_USD)
+ endif()
++# CHATPATCH-END ANDROID-HOST-USD-RNA
+ 
+ if(WITH_EXPERIMENTAL_FEATURES)
+   add_definitions(-DWITH_SIMULATION_DATABLOCK)
