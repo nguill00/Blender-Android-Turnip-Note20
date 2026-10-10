@@ -30,7 +30,30 @@ Primarily intended for Qualcomm Snapdragon devices using Adreno GPUs.
 - Mali / PowerVR: Turnip is not intended for these GPUs
 - Android minimum: API 31 / Android 12
 
-Other devices still require testing.
+Confirmed so far:
+
+| Device | Model | SoC / GPU | Android | Launch | Viewport | Turnip |
+|---|---|---|---|---|---|---|
+| Samsung Galaxy Note20 Ultra | SM-N986U | Snapdragon 865+ / Adreno 650 | 12+ | ✅ | ✅ | ✅ |
+
+See [COMPATIBILITY.md](COMPATIBILITY.md) for the full test matrix and reporting instructions.
+
+### Test another phone
+
+If you try this build on another device, please open a **Compatibility Test** issue and include:
+
+- Phone manufacturer and model
+- Exact model number
+- Android version
+- SoC / chipset
+- GPU
+- Whether Blender launches
+- Whether the 3D viewport renders
+- Whether Turnip loads
+- Whether it crashes
+- Relevant logcat output if it fails
+
+The repository includes an issue template so reports stay consistent and useful.
 
 ## Installing
 
